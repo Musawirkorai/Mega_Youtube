@@ -41,10 +41,26 @@ const userSchema = new Schema({
 });
 
 userSchema.pre("save", async function (next) {
-  if (this.isModified("password")) {
-  }
+  if (!this.isModified("password")) re;
   this.password = bcrypt.hash(this.password, 10);
   next();
 });
+
+userSchema.methods.isPasswordCorrect = async function (password) {
+  return await bcrypt.compare(password, this.password);
+};
+
+userSchema.methods.generateAcessToken = function () {
+  return jwt.sign(
+    {
+      _id: this._id,
+    },
+    process.env.REFRESH_TOKEN_SECRET,
+    {
+      expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
+    }
+  );
+};
+userSchema.methods.generateRefreshToken = function () {};
 
 export const User = mongoose.model("User", userSchema);
