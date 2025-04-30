@@ -38,11 +38,17 @@ const userSchema = new Schema({
   bio: {
     type: String,
   },
+  refreshToken: {
+    type: String,
+  },
+}, 
+{
+  timestamps: true,
 });
 
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) re;
-  this.password = bcrypt.hash(this.password, 10);
+  this.password = await bcrypt.hash(this.password, 10);
   next();
 });
 
